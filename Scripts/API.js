@@ -1,11 +1,7 @@
-console.log("App is running!");
-
-api = {
+var API = {
     "motherboard": "Here lies the motherboards",
     "cpu": {},
     "gpu": {},
     "psu": {},
 
-};
-
-console.log(api["motherboard"]);
+}

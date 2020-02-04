@@ -83,8 +83,9 @@ api = {
 
 class funtions {
     constructor() {
-
+        this.getMotherboard();
     }
+
     getMotherboard(budget, denied) {
         motherboards = api["motherboard"]
         var random = Math.floor(Math.random() * motherboards.lenght);
@@ -99,11 +100,11 @@ class funtions {
         });
 
         if (run == true) {
-            if(motherboard[random]){}
+            if (motherboard[random]) {}
         }
 
         if (selectedMotherboard != null) {
-            return selectedMotherboard;
+            console.log(selectedMotherboard);
         } else {
             this.getMotherboard(budget, denied);
         }

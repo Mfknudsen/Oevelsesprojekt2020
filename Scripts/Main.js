@@ -81,46 +81,70 @@ api = {
     }
 };
 
-getMotherboard = function(budget, denied) {
-    motherboards = api["motherboard"]
-    var random = Math.floor(Math.random() * motherboards.lenght);
-    var selectedMotherboard;
+console.log(api);
 
-    var run = true;
-    denied.forEach(element => {
-        console.log(element);
-        if (element == random) {
+getMotherboard = function (budget, denied) {
+    let motherboards = api["motherboard"];
+    let random = Math.floor(Math.random() * motherboards.lenght);
+    let currentNumber = 0;
+    let selectedMotherboard;
+    let run = true;
+
+    for (var n of denied) {
+        if (n == random) {
             run = false;
+            console.log("Will not run!");
             break;
         }
-    });
-
-    if (run == true) {
-        if (motherboard) {}
     }
 
-    if (selectedMotherboard != null) {
-        console.log(selectedMotherboard);
+    if (run) {
+        for (var board of Object.keys(motherboards)) {
+            if (random == currentNumber) {
+                selectedMotherboard = motherboards[board];
+                console.log("Motherboard has been selected")
+                break;
+            } else {
+                currentNumber++;
+            }
+        };
+
+        if (selectedMotherboard != null) {
+            if (selectedMotherboard["price"] > budget) {
+                denied.push(random);
+                selectedMotherboard = getMotherboard(budget, denied);
+            }
+        }
+
+        if (selectedMotherboard != null && selectedMotherboard["price"] < budget) {
+            console.log(selectedMotherboard);
+            return selectedMotherboard;
+        }
     } else {
-        this.getMotherboard(budget, denied);
+        return getMotherboard(budget, denied);
     }
 }
 
-getCPU = function() {
+getCPU = function () {
 
 }
 
-getRam = function() {
+getRam = function () {
 
 }
 
-getGPU = function() {
+getGPU = function () {
 
 }
-getCase = function() {
+getCase = function () {
 
 }
 
-getPSU = function() {
+getPSU = function () {
 
+}
+
+mobo = getMotherboard(900, [0]);
+if (mobo != null) {
+    console.log("Selected:" + mobo + ". Price:" + mobo["price"]);
 }

@@ -81,51 +81,46 @@ api = {
     }
 };
 
-class funtions {
-    constructor() {
-        this.getMotherboard();
-    }
+getMotherboard = function(budget, denied) {
+    motherboards = api["motherboard"]
+    var random = Math.floor(Math.random() * motherboards.lenght);
+    var selectedMotherboard;
 
-    getMotherboard(budget, denied) {
-        motherboards = api["motherboard"]
-        var random = Math.floor(Math.random() * motherboards.lenght);
-        var selectedMotherboard;
-
-        var run = true;
-        denied.forEach(element => {
-            if (element == random) {
-                run = false;
-                break;
-            }
-        });
-
-        if (run == true) {
-            if (motherboard[random]) {}
+    var run = true;
+    denied.forEach(element => {
+        console.log(element);
+        if (element == random) {
+            run = false;
+            break;
         }
+    });
 
-        if (selectedMotherboard != null) {
-            console.log(selectedMotherboard);
-        } else {
-            this.getMotherboard(budget, denied);
-        }
+    if (run == true) {
+        if (motherboard) {}
     }
 
-    getCPU() {
-
+    if (selectedMotherboard != null) {
+        console.log(selectedMotherboard);
+    } else {
+        this.getMotherboard(budget, denied);
     }
+}
 
-    getRam() {
+getCPU = function() {
 
-    }
+}
 
-    getGPU() {
+getRam = function() {
 
-    }
-    getCase() {
+}
 
-    }
+getGPU = function() {
 
-    getPSU() {
+}
+getCase = function() {
 
-    }
+}
+
+getPSU = function() {
+
 }

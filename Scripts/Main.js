@@ -1,17 +1,22 @@
+console.log("");
 console.log("App is running!");
 
 api = {
     "motherboard": {
         "msi_z390-a_pro": {
+            "name": "MSI Z390-A Pro",
             "price": 850
         },
         "asus_prime_b450-plus": {
+            "name": "Asus Prime B450-Plus",
             "price": 800
         },
         "asus_rog_strix_b450-f": {
+            "name": "Asus ROG Strix B450-F",
             "price": 900
         },
         "msi_mpg_z390_pro_carbon": {
+            "name": "MSI MPG Z390 Pro Carbon",
             "price": 1540
         }
     },
@@ -81,11 +86,13 @@ api = {
     }
 };
 
-console.log(api);
+var block = 0;
+var limit = 15;
+var motherboards = Object.values(api["motherboard"]);
 
 getMotherboard = function (budget, denied) {
-    let motherboards = api["motherboard"];
-    let random = Math.floor(Math.random() * motherboards.lenght);
+    block = block + 1;
+    let random = Math.floor(Math.random() * motherboards.length);
     let currentNumber = 0;
     let selectedMotherboard;
     let run = true;
@@ -93,12 +100,11 @@ getMotherboard = function (budget, denied) {
     for (var n of denied) {
         if (n == random) {
             run = false;
-            console.log("Will not run!");
             break;
         }
     }
 
-    if (run) {
+    if (run && block <= limit) {
         for (var board of Object.keys(motherboards)) {
             if (random == currentNumber) {
                 selectedMotherboard = motherboards[board];
@@ -110,18 +116,26 @@ getMotherboard = function (budget, denied) {
         };
 
         if (selectedMotherboard != null) {
+            console.log(selectedMotherboard["price"]+"    "+budget);
             if (selectedMotherboard["price"] > budget) {
+                console.log("Motherboard was denied based on price!");
+                console.log("Budget is " + selectedMotherboard["price"] - budget + " over budget!");
                 denied.push(random);
-                selectedMotherboard = getMotherboard(budget, denied);
+                selectedMotherboard = null;
             }
         }
 
-        if (selectedMotherboard != null && selectedMotherboard["price"] < budget) {
-            console.log(selectedMotherboard);
+        if (selectedMotherboard != null) {
             return selectedMotherboard;
+        } else {
+            return getMotherboard(budget, denied);
         }
-    } else {
+    } else if (block <= limit) {
         return getMotherboard(budget, denied);
+    } else {
+        block = block - 1;
+        console.log("Total tries: " + block);
+        return null;
     }
 }
 
@@ -144,7 +158,9 @@ getPSU = function () {
 
 }
 
-mobo = getMotherboard(900, [0]);
+mobo = getMotherboard(800, [0]);
 if (mobo != null) {
-    console.log("Selected:" + mobo + ". Price:" + mobo["price"]);
+    console.log("Selected:" + mobo["name"] + ". Price:" + mobo["price"]);
+} else {
+    console.log("Motherboard was returned null!");
 }

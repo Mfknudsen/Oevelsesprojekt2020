@@ -78,14 +78,24 @@ api = {
     },
 
     "gpu": {
-        "radeon": {},
-        "gtx": {},
-        "rtx": {}
+        "amd": {
+
+        },
+        "nvidia": {
+
+        }
     },
 
     "cpu_cooler": {
-        "closed_water": {},
-        "air": {}
+        "360mm": {
+
+        },
+        "240mm": {
+
+        },
+        "120mm": {
+
+        }
     },
 
     "ram": {
@@ -127,11 +137,6 @@ api = {
     }
 };
 
-var limit = 15;
-
-var MotherboardBudget = 1000;
-var CPUBudget = 200;
-
 getMotherboard = function (budget, denied, currentBlock) {
     let block = currentBlock + 1;
     let motherboards = Object.values(api["motherboard"]);
@@ -151,7 +156,6 @@ getMotherboard = function (budget, denied, currentBlock) {
         for (var board of Object.keys(motherboards)) {
             if (random == currentNumber) {
                 selectedMotherboard = motherboards[board];
-                console.log("Motherboard has been selected")
                 break;
             } else {
                 currentNumber++;
@@ -159,7 +163,6 @@ getMotherboard = function (budget, denied, currentBlock) {
         }
 
         if (selectedMotherboard["price"] > budget) {
-            console.log("Motherboard was denied based on price!");
             console.log("Budget is " + (selectedMotherboard["price"] - budget) + " over budget!");
             denied.push(random);
             selectedMotherboard = null;
@@ -180,32 +183,42 @@ getMotherboard = function (budget, denied, currentBlock) {
 }
 
 getCPU = function (budget, motherboard, denied, currentBlock) {
-    let cpu = Object.values(api["cpu"]);
+    let cpuAPI = Object.values(api["cpu"]);
+    let cpu = [];
     let block = 1;
     block = block + currentBlock;
     let currentNumber = 0;
-    let random = Math.floor(Math.random() * cpu.length);
     let run = true;
     let selectedCPU = null;
-
-    if (motherboard["cpu_compatibility"] == "LGA1151") {
-        cpu = cpu["intel type LGA1151"];
-    } else if (motherboard["cpu_compatibility"] == "AM4") {
-        cpu = cpu["amd"];
+    let goodRandom = false
+    for (var o of Object.keys(cpuAPI)) {
+        a = cpuAPI[o];
+        if (a["type"] == motherboard["cpu_compatibility"]) {
+            for (var n of Object.keys(a["chips"])) {
+                let e = a["chips"]
+                cpu.push(e[n]);
+            };
+        }
     }
+    let random = Math.floor(Math.random() * cpu.length);
 
-    for (var n of Object.keys(denied)) {
-        if (n == random) {
-            run = false;
+    for (var i = 0; goodRandom; i++) {
+        random = Math.floor(Math.random() * cpu.length);
+        for (var n of Object.keys(denied)) {
+            if (n == random) {
+                run = false;
+                break;
+            }
+        }
+        if (run) {
+            goodRandom = true;
             break;
         }
     }
-
     if (run && block <= limit) {
         for (var chips of Object.keys(cpu)) {
             if (random == currentNumber) {
                 selectedCPU = cpu[chips];
-                console.log("CPU has been selected")
                 break;
             } else {
                 currentNumber++;
@@ -213,18 +226,9 @@ getCPU = function (budget, motherboard, denied, currentBlock) {
         }
 
         if (selectedCPU["price"] > budget) {
-            console.log("CPU was denied based on price!");
-            console.log("Budget is " + (selectedCPU["price"] - budget) + " over budget!");
             denied.push(random);
             selectedCPU = null;
         }
-
-        if (selectedCPU["type"] != motherboard["cpu_compatibility"]) {
-            console.log("CPU was denied base on motherboard socket type!");
-            denied.push(random);
-            selectedCPU = null;
-        }
-
         if (selectedCPU != null) {
             return selectedCPU;
         } else {
@@ -239,14 +243,19 @@ getCPU = function (budget, motherboard, denied, currentBlock) {
     }
 }
 
+getCase = function () {
+
+}
+
+getCooler = function (pccase) {
+
+}
+
 getRam = function () {
 
 }
 
-getGPU = function () {
-
-}
-getCase = function () {
+getGPU = function (budget, cpu, denied) {
 
 }
 
@@ -254,16 +263,81 @@ getPSU = function () {
 
 }
 
-mobo = getMotherboard(MotherboardBudget, [0], 0);
+var limit = 50;
+
+var MotherboardBudget = 1000;
+var CPUBudget = 300;
+var CaseBudget = 500;
+var CoolerBudget = 100;
+var RamBudget = 120;
+var GPUBudget = 350;
+var PSUBudget = 50;
+
+
+mobo = getMotherboard(MotherboardBudget, [], 0);
+console.log("");
 if (mobo != null) {
-    console.log("Selected: " + mobo["name"] + ". Price: " + mobo["price"]);
+    console.log("Selected Motherboard:");
+    console.log(mobo["name"] + ". Price: " + mobo["price"] + ". Underbudget save: " + (MotherboardBudget - mobo["price"]));
 } else {
     console.log("Motherboard was returned null!");
 }
 
-cpu = getCPU(CPUBudget, mobo, [0], 0);
+cpu = getCPU(CPUBudget, mobo, [], 0);
+console.log("");
 if (cpu != null) {
-    console.log("Selected CPU: " + cpu["name"] + ". Price: " + cpu["price"]);
+    console.log("Selected CPU:");
+    console.log(cpu["name"] + ". Price: " + cpu["price"] + ". Underbudget save: " + (CPUBudget - cpu["price"]));
 } else {
     console.log("CPU was returned null!");
+}
+
+pccase = getCase();
+console.log("");
+if (pccase != null) {
+    console.log("Selected Case:");
+    console.log(pccase["name"] + ". Price: " + pccase["price"] + ". Underbudget save: " + (CaseBudget - pccase["price"]));
+
+} else {
+    console.log("Case was returned null!");
+}
+
+
+cooler = getCooler(pccase);
+console.log("");
+if (cooler != null) {
+    console.log("Selected Cooler:");
+    console.log(cooler["name"] + ". Price: " + cooler["price"] + ". Underbudget save: " + (CoolerBudget - cooler["price"]));
+} else {
+    console.log("Cooler was returned null!")
+}
+
+ram = getRam();
+console.log("");
+if (ram != null) {
+    console.log("Selected Ram:");
+    console.log(ram["name"] + ". Price: " + ram["price"] + ". Underbudget save: " + (RamBudget - ram["price"]));
+
+} else {
+    console.log("Ram was returned null!")
+}
+
+gpu = getGPU(GPUBudget, cpu, []);
+console.log("");
+if (gpu != null) {
+    console.log("Selected GPU:");
+    console.log(gpu["name"] + ". Price: " + gpu["price"] + ". Underbudget save: " + (GPUBudget - gpu["price"]));
+
+} else {
+    console.log("GPU was returned null!")
+}
+
+psu = getPSU();
+console.log("");
+if (psu != null) {
+    console.log("Selected PSU:");
+    console.log(psu["name"] + ". Price: " + psu["price"] + ". Underbudget save: " + (PSUBudget - psu["price"]));
+
+} else {
+    console.log("PSU was returned null!")
 }

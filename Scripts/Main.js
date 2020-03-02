@@ -187,7 +187,12 @@ getCPU = function (budget, motherboard, denied, currentBlock) {
     let random = Math.floor(Math.random() * cpu.length);
     let run = true;
     let selectedCPU = null;
-    let selectedType = null;
+
+    if (motherboard["cpu_compatibility"] == "LGA1151") {
+        cpu = cpu["intel type LGA1151"];
+    } else if (motherboard["cpu_compatibility"] == "AM4") {
+        cpu = cpu["amd"];
+    }
 
     for (var n of Object.keys(denied)) {
         if (n == random) {

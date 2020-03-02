@@ -1,6 +1,7 @@
 console.log("");
 console.log("App is running!");
 
+//Setting up a temp api wtih all the parts to build a pc.
 api = {
     "motherboard": {
         "msi_z390-a_pro": {
@@ -137,56 +138,69 @@ api = {
     }
 };
 
+//Setting up a function to get the motherboard based on the giving budget.
 getMotherboard = function (budget, denied, currentBlock) {
+    //Using a counter to stop the function from running infinit.
     let block = currentBlock + 1;
+    //Getting the motherboard from the temp api.
     let motherboards = Object.values(api["motherboard"]);
+    //Getting a number to choose a random motherboard.
     let random = Math.floor(Math.random() * motherboards.length);
-    let currentNumber = 0;
+    //The motherboard to return. Starts null and is later replaced.
     let selectedMotherboard = null;
+    //If the current random number has not produced a motherboard that was later denied then it will remain true.
     let run = true;
 
+    //Checking if the random number has been denied before.
     for (var n of Object.keys(denied)) {
         if (n == random) {
             run = false;
             break;
         }
     }
-
+    //If the random number has not been denied then it will be used to get a motherboard from the api.
     if (run && block <= limit) {
+        let currentNumber = 0;
+        //Running trough all the motherboards and getting one based on the random number.
         for (var board of Object.keys(motherboards)) {
             if (random == currentNumber) {
+                //The motherboard to return has been found.
                 selectedMotherboard = motherboards[board];
                 break;
             } else {
                 currentNumber++;
             }
         }
-
+        //Cheking if the current motherboard to return has a to high of a price.
         if (selectedMotherboard["price"] > budget) {
+            //If it is then it will be removed and later denied if the random number is the same as this one.
             console.log("Budget is " + (selectedMotherboard["price"] - budget) + " over budget!");
             denied.push(random);
             selectedMotherboard = null;
         }
-
+        //If there still is a motherboard selected then it be returned.
         if (selectedMotherboard != null) {
             return selectedMotherboard;
         } else {
+            //If there is not a motherboard then it will try again.
             return getMotherboard(budget, denied, block);
         }
     } else if (block <= limit) {
+        //If the random number was denied then it will try again.
         return getMotherboard(budget, denied, block);
     } else {
+        //If it tries more then the limit will alow it then it will be returned null.
         block = block - 1;
         console.log("Total tries: " + block);
         return null;
     }
 }
 
+//Setting up a function to get the CPU based on a giving budget.
 getCPU = function (budget, motherboard, denied, currentBlock) {
     let cpuAPI = Object.values(api["cpu"]);
     let cpu = [];
-    let block = 1;
-    block = block + currentBlock;
+    let block =+ currentBlock + 1;
     let currentNumber = 0;
     let run = true;
     let selectedCPU = null;

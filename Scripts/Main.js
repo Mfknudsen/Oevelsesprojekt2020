@@ -7,32 +7,38 @@ api = {
         "msi_z390-a_pro": {
             "name": "MSI Z390-A Pro",
             "price": 850,
-            "cpu_compatibility": "LGA1151"
+            "cpu_compatibility": "LGA1151",
+            "watt": 100
         },
         "asus_prime_b450-plus": {
             "name": "Asus Prime B450-Plus",
             "price": 800,
-            "cpu_compatibility": "LGA1151"
+            "cpu_compatibility": "LGA1151",
+            "watt": 100
         },
         "asus_rog_strix_b450-f": {
             "name": "Asus ROG Strix B450-F",
             "price": 900,
-            "cpu_compatibility": "LGA1151"
+            "cpu_compatibility": "LGA1151",
+            "watt": 100
         },
         "msi_mpg_z390_pro_carbon": {
             "name": "MSI MPG Z390 Pro Carbon",
             "price": 1540,
-            "cpu_compatibility": "LGA1151"
+            "cpu_compatibility": "LGA1151",
+            "watt": 100
         },
         "asus_rog_strix_x570-e": {
             "name": "Asus ROG Strix X570-E",
             "price": 1000,
-            "cpu_compatibility": "AM4"
+            "cpu_compatibility": "AM4",
+            "watt": 100
         },
         "gigabyte_b450-ds3h": {
             "name": "Gigabyte B450 DS3H",
             "price": 950,
-            "cpu_compatibility": "AM4"
+            "cpu_compatibility": "AM4",
+            "watt": 100
         }
     },
 
@@ -42,15 +48,18 @@ api = {
             "chips": {
                 "i5": {
                     "name": "Intel i5",
-                    "price": 50
+                    "price": 50,
+                    "watt": 50
                 },
                 "i7": {
                     "name": "Intel i7",
-                    "price": 150
+                    "price": 150,
+                    "watt": 50
                 },
                 "i9": {
                     "name": "Intel i9",
-                    "price": 350
+                    "price": 350,
+                    "watt": 50
                 }
             }
         },
@@ -60,19 +69,23 @@ api = {
             "chips": {
                 "3": {
                     "name": "Ryzen 3",
-                    "price": 50
+                    "price": 50,
+                    "watt": 50
                 },
                 "5": {
                     "name": "Ryzen 5",
-                    "price": 100
+                    "price": 100,
+                    "watt": 50
                 },
                 "7": {
                     "name": "Ryzen 7",
-                    "price": 250
+                    "price": 250,
+                    "watt": 50
                 },
                 "9": {
                     "name": "Ryzen 9",
-                    "price": 350
+                    "price": 350,
+                    "watt": 50
                 }
             }
         }
@@ -205,15 +218,19 @@ getCPU = function (budget, motherboard, denied, currentBlock) {
     let run = true;
     let selectedCPU = null;
     let goodRandom = false
+
+    //Checking what kind of CPU the choosing motherboard uses.
     for (var o of Object.keys(cpuAPI)) {
         a = cpuAPI[o];
         if (a["type"] == motherboard["cpu_compatibility"]) {
             for (var n of Object.keys(a["chips"])) {
                 let e = a["chips"]
+                //Making an array of the chips that is compatibly with the choosing motherboard.
                 cpu.push(e[n]);
             };
         }
     }
+    
     let random = Math.floor(Math.random() * cpu.length);
 
     for (var i = 0; goodRandom; i++) {
@@ -277,6 +294,7 @@ getPSU = function () {
 
 }
 
+//Used to limit the amout of tries to get each part.
 var limit = 50;
 
 var MotherboardBudget = 1000;

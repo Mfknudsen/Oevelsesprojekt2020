@@ -187,7 +187,6 @@ getMotherboard = function (budget, denied, currentBlock) {
         //Cheking if the current motherboard to return has a to high of a price.
         if (selectedMotherboard["price"] > budget) {
             //If it is then it will be removed and later denied if the random number is the same as this one.
-            console.log("Budget is " + (selectedMotherboard["price"] - budget) + " over budget!");
             denied.push(random);
             selectedMotherboard = null;
         }
